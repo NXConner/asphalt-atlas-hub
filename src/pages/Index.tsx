@@ -3,8 +3,10 @@ import { Navigation } from "@/components/Navigation"
 import { HeroSection } from "@/components/HeroSection"
 import { SealcoatCalculator } from "@/components/calculators/SealcoatCalculator"
 import { StripingCalculator } from "@/components/calculators/StripingCalculator"
+import { MaterialEstimator } from "@/components/calculators/MaterialEstimator"
 import { RegulationsGuide } from "@/components/regulations/RegulationsGuide"
 import { ProjectDashboard } from "@/components/dashboard/ProjectDashboard"
+import { AsphaltGuardian } from "@/components/guardian/AsphaltGuardian"
 
 const Index = () => {
   const [currentSection, setCurrentSection] = useState("home")
@@ -15,14 +17,22 @@ const Index = () => {
         return <SealcoatCalculator />
       case "striping-calc":
         return <StripingCalculator />
+      case "material-calc":
+        return <MaterialEstimator />
       case "regulations":
         return <RegulationsGuide />
       case "dashboard":
         return <ProjectDashboard />
-      case "material-calc":
-        return <div className="max-w-4xl mx-auto p-6"><h1 className="text-3xl font-bold">Material Estimator - Coming Soon</h1></div>
+      case "guardian":
+        return <AsphaltGuardian />
+      case "quality":
+        return <AsphaltGuardian />
+      case "compliance":
+        return <AsphaltGuardian />
+      case "inspections":
+        return <AsphaltGuardian />
       case "cost-calc":
-        return <div className="max-w-4xl mx-auto p-6"><h1 className="text-3xl font-bold">Cost Estimator - Coming Soon</h1></div>
+        return <div className="max-w-4xl mx-auto p-6"><h1 className="text-3xl font-bold">Advanced Cost Calculator - Coming Soon</h1></div>
       case "scheduler":
         return <div className="max-w-4xl mx-auto p-6"><h1 className="text-3xl font-bold">Job Scheduler - Coming Soon</h1></div>
       case "equipment":

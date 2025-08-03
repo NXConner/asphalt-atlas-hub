@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu, Calculator, FileText, BookOpen, Settings, MapPin, DollarSign, Truck, Calendar, BarChart3 } from "lucide-react"
+import { Menu, Calculator, FileText, BookOpen, Settings, MapPin, DollarSign, Truck, Calendar, BarChart3, Shield, CheckCircle, Eye } from "lucide-react"
 
 interface NavigationProps {
   currentSection: string
@@ -20,11 +20,20 @@ export const Navigation = ({ currentSection, onSectionChange }: NavigationProps)
       ]
     },
     {
-      title: "Project Management",
+      title: "Guardian Suite",
       items: [
+        { name: "Live Monitoring", section: "guardian", icon: Shield },
+        { name: "Quality Control", section: "quality", icon: CheckCircle },
+        { name: "Compliance Dashboard", section: "compliance", icon: FileText },
+        { name: "Site Inspections", section: "inspections", icon: Eye },
+      ]
+    },
+    {
+      title: "Project Management", 
+      items: [
+        { name: "Project Dashboard", section: "dashboard", icon: BarChart3 },
         { name: "Job Scheduler", section: "scheduler", icon: Calendar },
         { name: "Equipment Tracker", section: "equipment", icon: Truck },
-        { name: "Progress Dashboard", section: "dashboard", icon: BarChart3 },
         { name: "Site Mapping", section: "mapping", icon: MapPin },
       ]
     },
