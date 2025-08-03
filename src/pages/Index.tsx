@@ -7,6 +7,13 @@ import { MaterialEstimator } from "@/components/calculators/MaterialEstimator"
 import { RegulationsGuide } from "@/components/regulations/RegulationsGuide"
 import { ProjectDashboard } from "@/components/dashboard/ProjectDashboard"
 import { AsphaltGuardian } from "@/components/guardian/AsphaltGuardian"
+import { WeatherConditions } from "@/components/weather/WeatherConditions"
+import { BestPractices } from "@/components/practices/BestPractices"
+import { MaterialDatabase } from "@/components/materials/MaterialDatabase"
+import { CostCalculator } from "@/components/calculators/CostCalculator"
+import { JobScheduler } from "@/components/scheduler/JobScheduler"
+import { EquipmentTracker } from "@/components/equipment/EquipmentTracker"
+import { SiteMapping } from "@/components/mapping/SiteMapping"
 
 const Index = () => {
   const [currentSection, setCurrentSection] = useState("home")
@@ -32,19 +39,19 @@ const Index = () => {
       case "inspections":
         return <AsphaltGuardian />
       case "cost-calc":
-        return <div className="max-w-4xl mx-auto p-6"><h1 className="text-3xl font-bold">Advanced Cost Calculator - Coming Soon</h1></div>
+        return <CostCalculator />
       case "scheduler":
-        return <div className="max-w-4xl mx-auto p-6"><h1 className="text-3xl font-bold">Job Scheduler - Coming Soon</h1></div>
+        return <JobScheduler />
       case "equipment":
-        return <div className="max-w-4xl mx-auto p-6"><h1 className="text-3xl font-bold">Equipment Tracker - Coming Soon</h1></div>
+        return <EquipmentTracker />
       case "mapping":
-        return <div className="max-w-4xl mx-auto p-6"><h1 className="text-3xl font-bold">Site Mapping - Coming Soon</h1></div>
+        return <SiteMapping />
       case "materials":
-        return <div className="max-w-4xl mx-auto p-6"><h1 className="text-3xl font-bold">Material Database - Coming Soon</h1></div>
+        return <MaterialDatabase />
       case "practices":
-        return <div className="max-w-4xl mx-auto p-6"><h1 className="text-3xl font-bold">Best Practices - Coming Soon</h1></div>
+        return <BestPractices />
       case "weather":
-        return <div className="max-w-4xl mx-auto p-6"><h1 className="text-3xl font-bold">Weather Conditions - Coming Soon</h1></div>
+        return <WeatherConditions />
       default:
         return <HeroSection onSectionChange={setCurrentSection} />
     }
