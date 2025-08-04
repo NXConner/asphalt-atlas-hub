@@ -19,7 +19,7 @@ import {
   Move,
   Square,
   Circle,
-  Polygon,
+  Pentagon,
   Save,
   Trash2
 } from "lucide-react"
@@ -145,7 +145,7 @@ export const SiteMapping = () => {
     { id: "move", label: "Move", icon: Move },
     { id: "measure", label: "Measure", icon: Ruler },
     { id: "area", label: "Area", icon: Square },
-    { id: "polygon", label: "Polygon", icon: Polygon },
+            { id: "polygon", label: "Polygon", icon: Pentagon },
     { id: "circle", label: "Circle", icon: Circle }
   ]
 
@@ -526,8 +526,8 @@ export const SiteMapping = () => {
                 
                 <Card className="border-dashed">
                   <CardContent className="p-4 text-center">
-                    <Polygon className="h-8 w-8 mx-auto text-purple-600 mb-2" />
-                    <h4 className="font-semibold">Polygon Tool</h4>
+                                    <Pentagon className="h-8 w-8 mx-auto text-purple-600 mb-2" />
+                <h4 className="font-semibold">Polygon Tool</h4>
                     <p className="text-sm text-gray-600 mb-3">Create custom shapes and boundaries</p>
                     <Button size="sm" variant="outline">Start Drawing</Button>
                   </CardContent>

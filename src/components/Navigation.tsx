@@ -1,7 +1,12 @@
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu, Calculator, FileText, BookOpen, Settings, MapPin, DollarSign, Truck, Calendar, BarChart3, Shield, CheckCircle, Eye } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { AuthModal } from "@/components/auth/AuthModal"
+import { useAuthContext } from "@/components/auth/AuthProvider"
+import { Menu, Calculator, FileText, BookOpen, Settings, MapPin, DollarSign, Truck, Calendar, BarChart3, Shield, CheckCircle, Eye, LogOut, User } from "lucide-react"
 
 interface NavigationProps {
   currentSection: string
@@ -9,6 +14,8 @@ interface NavigationProps {
 }
 
 export const Navigation = ({ currentSection, onSectionChange }: NavigationProps) => {
+  const { user, profile, signOut, isAuthenticated } = useAuthContext()
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
   const menuItems = [
     {
       title: "Calculators",
