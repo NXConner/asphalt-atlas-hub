@@ -7,6 +7,8 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner"
 const SealcoatCalculator = lazy(() => import("@/components/calculators/SealcoatCalculator").then(module => ({ default: module.SealcoatCalculator })))
 const StripingCalculator = lazy(() => import("@/components/calculators/StripingCalculator").then(module => ({ default: module.StripingCalculator })))
 const MaterialEstimator = lazy(() => import("@/components/calculators/MaterialEstimator").then(module => ({ default: module.MaterialEstimator })))
+const AreaCalculator = lazy(() => import("@/components/calculators/AreaCalculator").then(module => ({ default: module.AreaCalculator })))
+const QuoteGenerator = lazy(() => import("@/components/templates/QuoteGenerator").then(module => ({ default: module.QuoteGenerator })))
 const RegulationsGuide = lazy(() => import("@/components/regulations/RegulationsGuide").then(module => ({ default: module.RegulationsGuide })))
 const ProjectDashboard = lazy(() => import("@/components/dashboard/ProjectDashboard").then(module => ({ default: module.ProjectDashboard })))
 const AsphaltGuardian = lazy(() => import("@/components/guardian/AsphaltGuardian").then(module => ({ default: module.AsphaltGuardian })))
@@ -35,6 +37,10 @@ const Index = () => {
         return <ComponentWrapper><StripingCalculator /></ComponentWrapper>
       case "material-calc":
         return <ComponentWrapper><MaterialEstimator /></ComponentWrapper>
+      case "area-calc":
+        return <ComponentWrapper><AreaCalculator /></ComponentWrapper>
+      case "quote-generator":
+        return <ComponentWrapper><QuoteGenerator /></ComponentWrapper>
       case "regulations":
         return <ComponentWrapper><RegulationsGuide /></ComponentWrapper>
       case "dashboard":

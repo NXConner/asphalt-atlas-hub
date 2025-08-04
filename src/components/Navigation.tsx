@@ -23,6 +23,7 @@ export const Navigation = ({ currentSection, onSectionChange }: NavigationProps)
         { name: "Sealcoat Calculator", section: "sealcoat-calc", icon: Calculator },
         { name: "Striping Calculator", section: "striping-calc", icon: Calculator },
         { name: "Material Estimator", section: "material-calc", icon: Calculator },
+        { name: "Area Calculator", section: "area-calc", icon: Calculator },
         { name: "Cost Estimator", section: "cost-calc", icon: DollarSign },
       ]
     },
@@ -39,6 +40,7 @@ export const Navigation = ({ currentSection, onSectionChange }: NavigationProps)
       title: "Project Management", 
       items: [
         { name: "Project Dashboard", section: "dashboard", icon: BarChart3 },
+        { name: "Quote Generator", section: "quote-generator", icon: FileText },
         { name: "Job Scheduler", section: "scheduler", icon: Calendar },
         { name: "Equipment Tracker", section: "equipment", icon: Truck },
         { name: "Site Mapping", section: "mapping", icon: MapPin },
