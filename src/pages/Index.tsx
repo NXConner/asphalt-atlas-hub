@@ -1,57 +1,66 @@
-import { useState } from "react"
+import { useState, lazy, Suspense } from "react"
 import { Navigation } from "@/components/Navigation"
 import { HeroSection } from "@/components/HeroSection"
-import { SealcoatCalculator } from "@/components/calculators/SealcoatCalculator"
-import { StripingCalculator } from "@/components/calculators/StripingCalculator"
-import { MaterialEstimator } from "@/components/calculators/MaterialEstimator"
-import { RegulationsGuide } from "@/components/regulations/RegulationsGuide"
-import { ProjectDashboard } from "@/components/dashboard/ProjectDashboard"
-import { AsphaltGuardian } from "@/components/guardian/AsphaltGuardian"
-import { WeatherConditions } from "@/components/weather/WeatherConditions"
-import { BestPractices } from "@/components/practices/BestPractices"
-import { MaterialDatabase } from "@/components/materials/MaterialDatabase"
-import { CostCalculator } from "@/components/calculators/CostCalculator"
-import { JobScheduler } from "@/components/scheduler/JobScheduler"
-import { EquipmentTracker } from "@/components/equipment/EquipmentTracker"
-import { SiteMapping } from "@/components/mapping/SiteMapping"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
+
+// Lazy load components for better performance
+const SealcoatCalculator = lazy(() => import("@/components/calculators/SealcoatCalculator").then(module => ({ default: module.SealcoatCalculator })))
+const StripingCalculator = lazy(() => import("@/components/calculators/StripingCalculator").then(module => ({ default: module.StripingCalculator })))
+const MaterialEstimator = lazy(() => import("@/components/calculators/MaterialEstimator").then(module => ({ default: module.MaterialEstimator })))
+const RegulationsGuide = lazy(() => import("@/components/regulations/RegulationsGuide").then(module => ({ default: module.RegulationsGuide })))
+const ProjectDashboard = lazy(() => import("@/components/dashboard/ProjectDashboard").then(module => ({ default: module.ProjectDashboard })))
+const AsphaltGuardian = lazy(() => import("@/components/guardian/AsphaltGuardian").then(module => ({ default: module.AsphaltGuardian })))
+const WeatherConditions = lazy(() => import("@/components/weather/WeatherConditions").then(module => ({ default: module.WeatherConditions })))
+const BestPractices = lazy(() => import("@/components/practices/BestPractices").then(module => ({ default: module.BestPractices })))
+const MaterialDatabase = lazy(() => import("@/components/materials/MaterialDatabase").then(module => ({ default: module.MaterialDatabase })))
+const CostCalculator = lazy(() => import("@/components/calculators/CostCalculator").then(module => ({ default: module.CostCalculator })))
+const JobScheduler = lazy(() => import("@/components/scheduler/JobScheduler").then(module => ({ default: module.JobScheduler })))
+const EquipmentTracker = lazy(() => import("@/components/equipment/EquipmentTracker").then(module => ({ default: module.EquipmentTracker })))
+const SiteMapping = lazy(() => import("@/components/mapping/SiteMapping").then(module => ({ default: module.SiteMapping })))
 
 const Index = () => {
   const [currentSection, setCurrentSection] = useState("home")
 
   const renderSection = () => {
+    const ComponentWrapper = ({ children }: { children: React.ReactNode }) => (
+      <Suspense fallback={<LoadingSpinner size="lg" />}>
+        {children}
+      </Suspense>
+    )
+
     switch (currentSection) {
       case "sealcoat-calc":
-        return <SealcoatCalculator />
+        return <ComponentWrapper><SealcoatCalculator /></ComponentWrapper>
       case "striping-calc":
-        return <StripingCalculator />
+        return <ComponentWrapper><StripingCalculator /></ComponentWrapper>
       case "material-calc":
-        return <MaterialEstimator />
+        return <ComponentWrapper><MaterialEstimator /></ComponentWrapper>
       case "regulations":
-        return <RegulationsGuide />
+        return <ComponentWrapper><RegulationsGuide /></ComponentWrapper>
       case "dashboard":
-        return <ProjectDashboard />
+        return <ComponentWrapper><ProjectDashboard /></ComponentWrapper>
       case "guardian":
-        return <AsphaltGuardian />
+        return <ComponentWrapper><AsphaltGuardian /></ComponentWrapper>
       case "quality":
-        return <AsphaltGuardian />
+        return <ComponentWrapper><AsphaltGuardian /></ComponentWrapper>
       case "compliance":
-        return <AsphaltGuardian />
+        return <ComponentWrapper><AsphaltGuardian /></ComponentWrapper>
       case "inspections":
-        return <AsphaltGuardian />
+        return <ComponentWrapper><AsphaltGuardian /></ComponentWrapper>
       case "cost-calc":
-        return <CostCalculator />
+        return <ComponentWrapper><CostCalculator /></ComponentWrapper>
       case "scheduler":
-        return <JobScheduler />
+        return <ComponentWrapper><JobScheduler /></ComponentWrapper>
       case "equipment":
-        return <EquipmentTracker />
+        return <ComponentWrapper><EquipmentTracker /></ComponentWrapper>
       case "mapping":
-        return <SiteMapping />
+        return <ComponentWrapper><SiteMapping /></ComponentWrapper>
       case "materials":
-        return <MaterialDatabase />
+        return <ComponentWrapper><MaterialDatabase /></ComponentWrapper>
       case "practices":
-        return <BestPractices />
+        return <ComponentWrapper><BestPractices /></ComponentWrapper>
       case "weather":
-        return <WeatherConditions />
+        return <ComponentWrapper><WeatherConditions /></ComponentWrapper>
       default:
         return <HeroSection onSectionChange={setCurrentSection} />
     }
