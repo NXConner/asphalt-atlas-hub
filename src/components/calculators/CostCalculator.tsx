@@ -19,6 +19,7 @@ import {
   Settings,
   PieChart
 } from "lucide-react"
+import { BUSINESS_INFO, MATERIAL_COSTS, APPLICATION_RATES, OPERATIONAL_COSTS, CALCULATIONS } from "@/lib/business-config"
 
 interface ProjectEstimate {
   materials: number
@@ -48,20 +49,21 @@ export const CostCalculator = () => {
   const [projectType, setProjectType] = useState("")
   const [projectSize, setProjectSize] = useState("")
   const [location, setLocation] = useState("")
-  const [laborRate, setLaborRate] = useState("25")
-  const [overheadPercent, setOverheadPercent] = useState("15")
-  const [profitPercent, setProfitPercent] = useState("20")
+  const [distanceFromBase, setDistanceFromBase] = useState("0")
+  const [laborRate, setLaborRate] = useState(BUSINESS_INFO.employees.blendedRateWithOverhead.toString())
+  const [overheadPercent, setOverheadPercent] = useState(OPERATIONAL_COSTS.overhead.defaultPercent.toString())
+  const [profitPercent, setProfitPercent] = useState(OPERATIONAL_COSTS.profit.defaultPercent.toString())
   const [estimate, setEstimate] = useState<ProjectEstimate | null>(null)
   const [materialCosts, setMaterialCosts] = useState<MaterialCost[]>([])
   const [laborCosts, setLaborCosts] = useState<LaborCost[]>([])
 
   const projectTypes = [
-    { value: "sealcoat", label: "Sealcoating", baseRate: 0.15 },
-    { value: "striping", label: "Line Striping", baseRate: 1.25 },
-    { value: "crack-seal", label: "Crack Sealing", baseRate: 0.85 },
-    { value: "paving", label: "Asphalt Paving", baseRate: 3.50 },
+    { value: "sealcoat", label: "Sealcoating", baseRate: 0.08 }, // Virginia pricing from Excel
+    { value: "striping", label: "Line Striping", baseRate: APPLICATION_RATES.lineStriping.costPerLinearFoot.max },
+    { value: "crack-seal", label: "Crack Sealing", baseRate: APPLICATION_RATES.crackFilling.max },
+    { value: "paving", label: "Asphalt Paving", baseRate: APPLICATION_RATES.asphaltPatching.hotMix.max },
     { value: "resurfacing", label: "Resurfacing", baseRate: 2.25 },
-    { value: "full-depth", label: "Full Depth Reclamation", baseRate: 4.75 }
+    { value: "patching", label: "Asphalt Patching", baseRate: APPLICATION_RATES.asphaltPatching.coldPatch.max }
   ]
 
   const locationFactors = [
@@ -95,8 +97,12 @@ export const CostCalculator = () => {
     // Calculate equipment costs
     const equipmentCost = calculateEquipmentCost(projectType, size, laborHours)
 
+    // Calculate fuel/travel costs using Virginia business configuration
+    const distance = parseFloat(distanceFromBase) || 0
+    const fuelCost = CALCULATIONS.travelCost(distance)
+
     // Calculate overhead and profit
-    const subtotal = totalMaterialCost + totalLaborCost + equipmentCost
+    const subtotal = totalMaterialCost + totalLaborCost + equipmentCost + fuelCost
     const overheadCost = subtotal * (parseFloat(overheadPercent) / 100)
     const profitCost = (subtotal + overheadCost) * (parseFloat(profitPercent) / 100)
     
@@ -105,7 +111,7 @@ export const CostCalculator = () => {
     const newEstimate: ProjectEstimate = {
       materials: totalMaterialCost,
       labor: totalLaborCost,
-      equipment: equipmentCost,
+      equipment: equipmentCost + fuelCost, // Include fuel in equipment costs for display
       overhead: overheadCost,
       profit: profitCost,
       total: total
@@ -145,9 +151,10 @@ export const CostCalculator = () => {
   const generateMaterialBreakdown = (type: string, size: number, costPerUnit: number): MaterialCost[] => {
     const materials: { [key: string]: MaterialCost[] } = {
       "sealcoat": [
-        { name: "Sealcoat Material", quantity: size / 90, unit: "gallons", unitCost: 2.75, total: 0 },
-        { name: "Sand Additive", quantity: size / 500, unit: "bags", unitCost: 12.50, total: 0 },
-        { name: "Primer/Cleaner", quantity: size / 1000, unit: "gallons", unitCost: 15.00, total: 0 }
+        { name: "SealMaster PMM Concentrate", quantity: size / APPLICATION_RATES.sealcoating.coverage.average, unit: "gallons", unitCost: MATERIAL_COSTS.sealMasterPMM.price, total: 0 },
+        { name: "Sand (50lb bags)", quantity: CALCULATIONS.sandBagsNeeded(size / APPLICATION_RATES.sealcoating.coverage.average), unit: "bags", unitCost: MATERIAL_COSTS.sand50lb.price, total: 0 },
+        { name: "Water", quantity: CALCULATIONS.waterNeeded(size / APPLICATION_RATES.sealcoating.coverage.average), unit: "gallons", unitCost: 0.00, total: 0 },
+        { name: "Prep Seal (Oil Spots)", quantity: 0.1, unit: "buckets", unitCost: MATERIAL_COSTS.prepSeal.price, total: 0 }
       ],
       "striping": [
         { name: "Traffic Paint", quantity: size / 350, unit: "gallons", unitCost: 28.75, total: 0 },
@@ -155,7 +162,7 @@ export const CostCalculator = () => {
         { name: "Primer", quantity: size / 2000, unit: "gallons", unitCost: 22.00, total: 0 }
       ],
       "crack-seal": [
-        { name: "Hot Pour Sealant", quantity: size / 175, unit: "bags", unitCost: 45.50, total: 0 },
+        { name: "CrackMaster Crackfiller", quantity: size / 150, unit: "30lb boxes", unitCost: MATERIAL_COSTS.crackMaster.price, total: 0 },
         { name: "Cleaning Materials", quantity: 1, unit: "lot", unitCost: 25.00, total: 0 }
       ],
       "paving": [
@@ -298,11 +305,62 @@ export const CostCalculator = () => {
                   />
                 </div>
 
-                <div className="flex items-end">
-                  <Button onClick={calculateEstimate} className="w-full">
-                    Calculate Estimate
-                  </Button>
+                <div className="space-y-2">
+                  <Label htmlFor="distance">Distance from Base (Miles)</Label>
+                  <Input
+                    id="distance"
+                    type="number"
+                    value={distanceFromBase}
+                    onChange={(e) => setDistanceFromBase(e.target.value)}
+                    placeholder="0"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Distance from {BUSINESS_INFO.address} for fuel calculation
+                  </p>
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="labor-rate">Labor Rate ($/hour)</Label>
+                  <Input
+                    id="labor-rate"
+                    type="number"
+                    value={laborRate}
+                    onChange={(e) => setLaborRate(e.target.value)}
+                    placeholder="45.00"
+                  />
+                  <p className="text-xs text-muted-foreground">Includes overhead & benefits</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="overhead">Overhead (%)</Label>
+                  <Input
+                    id="overhead"
+                    type="number"
+                    value={overheadPercent}
+                    onChange={(e) => setOverheadPercent(e.target.value)}
+                    placeholder="20"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="profit">Profit Margin (%)</Label>
+                  <Input
+                    id="profit"
+                    type="number"
+                    value={profitPercent}
+                    onChange={(e) => setProfitPercent(e.target.value)}
+                    placeholder="20"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-center pt-4">
+                <Button onClick={calculateEstimate} className="w-full md:w-auto px-8">
+                  <Calculator className="h-4 w-4 mr-2" />
+                  Calculate Virginia-Based Estimate
+                </Button>
               </div>
             </CardContent>
           </Card>
