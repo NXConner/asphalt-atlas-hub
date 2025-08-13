@@ -303,7 +303,7 @@ export const AsphaltGuardian = () => {
                     <div>
                       <p className="text-muted-foreground">Issues</p>
                       <p className="font-medium">
-                        {inspection.issues !== null ? inspection.issues : 'TBD'}
+                        {inspection.issues !== null ? inspection.issues : '—'}
                       </p>
                     </div>
                   </div>

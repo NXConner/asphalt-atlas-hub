@@ -210,7 +210,7 @@ export const JobScheduler = () => {
       notes: newJob.notes,
       weather: {
         temperature: 65,
-        conditions: "TBD",
+        conditions: "Clear",
         suitable: true
       }
     }
