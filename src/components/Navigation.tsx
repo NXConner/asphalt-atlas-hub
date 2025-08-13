@@ -99,6 +99,32 @@ export const Navigation = ({ currentSection, onSectionChange }: NavigationProps)
                 ))}
               </NavigationMenuList>
             </NavigationMenu>
+
+            <div className="flex items-center gap-3">
+              {isAuthenticated ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="px-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={undefined} alt={profile?.full_name || user?.email || "User"} />
+                        <AvatarFallback>{(profile?.full_name || user?.email || "U").charAt(0).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>{profile?.full_name || user?.email}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => signOut()}>
+                      <LogOut className="mr-2 h-4 w-4" /> Sign out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button variant="outline" onClick={() => setIsAuthModalOpen(true)}>
+                  <User className="mr-2 h-4 w-4" /> Sign in
+                </Button>
+              )}
+            </div>
           </div>
 
           {/* Mobile Navigation */}
@@ -137,6 +163,7 @@ export const Navigation = ({ currentSection, onSectionChange }: NavigationProps)
           </div>
         </div>
       </div>
+      <AuthModal isOpen={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} />
     </nav>
   )
 }

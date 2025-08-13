@@ -18,7 +18,27 @@ export const useAuth = () => {
   })
 
   useEffect(() => {
-    // Get initial session
+    // Listen for auth changes first to avoid missing events
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        // Defer fetching profile to avoid deadlocks
+        setTimeout(() => fetchProfile(session.user!.id), 0)
+        setState(prev => ({ 
+          ...prev, 
+          user: session.user, 
+          loading: false 
+        }))
+      } else {
+        setState(prev => ({ 
+          ...prev, 
+          user: null, 
+          profile: null, 
+          loading: false 
+        }))
+      }
+    })
+
+    // Then get initial session
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error) {
         setState(prev => ({ ...prev, error, loading: false }))
@@ -26,7 +46,7 @@ export const useAuth = () => {
       }
 
       if (session?.user) {
-        fetchProfile(session.user.id)
+        setTimeout(() => fetchProfile(session.user!.id), 0)
         setState(prev => ({ 
           ...prev, 
           user: session.user, 
@@ -36,27 +56,6 @@ export const useAuth = () => {
         setState(prev => ({ ...prev, loading: false }))
       }
     })
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (session?.user) {
-          fetchProfile(session.user.id)
-          setState(prev => ({ 
-            ...prev, 
-            user: session.user, 
-            loading: false 
-          }))
-        } else {
-          setState(prev => ({ 
-            ...prev, 
-            user: null, 
-            profile: null, 
-            loading: false 
-          }))
-        }
-      }
-    )
 
     return () => subscription.unsubscribe()
   }, [])
@@ -74,7 +73,7 @@ export const useAuth = () => {
         return
       }
 
-      setState(prev => ({ ...prev, profile: data }))
+      setState(prev => ({ ...prev, profile: (data as unknown as Profile) }))
     } catch (error) {
       console.error('Error fetching profile:', error)
     }
@@ -83,11 +82,13 @@ export const useAuth = () => {
   const signUp = async (email: string, password: string, metadata?: any) => {
     setState(prev => ({ ...prev, loading: true, error: null }))
     
+    const redirectUrl = `${window.location.origin}/`
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: metadata
+        data: metadata,
+        emailRedirectTo: redirectUrl
       }
     })
 
@@ -140,7 +141,7 @@ export const useAuth = () => {
       .single()
 
     if (!error && data) {
-      setState(prev => ({ ...prev, profile: data }))
+      setState(prev => ({ ...prev, profile: (data as unknown as Profile) }))
     }
 
     setState(prev => ({ ...prev, loading: false }))
